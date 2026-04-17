@@ -56,45 +56,45 @@ void loop(){
 }
 
 
-// Directions
+///////////////////////////////////////////////////////////// Directions/////////////////////////////////////////////////////////////////
 void Up(){
-  LE.write(0);
-  RE.write(180);
+  LE.write(50);
+  RE.write(50);
 }
 
 void down(){
-  LE.write(180);
-  Re.write(180);
+  LE.write(130);
+  Re.write(130);
 }
 
 void right(){
-  LE.write(90);
-  RE.write(0);
+  LE.write(50); //UP
+  RE.write(130); //DOWN
 }
 
 void left(){
-  LE.write(0);
-  RE.write(90);
+  LE.write(130);
+  RE.write(50);
 }
 
 
-//Soft-Turning-Directions
+///////////////////////////////////////////////////////Soft-Turning-Directions////////////////////////////////////////////////////////
 void soft_Up(){
-  LE.write(45);
-  RE.write(45);
+  LE.write(60); 
+  RE.write(60);
 }
 
 void soft_down(){
-  LE.write();
-  Re.write();
+  LE.write(120);
+  RE.write(120);
 }
 
 void soft_right(){
-  LE.write(45);
-  RE.write();
+  LE.write(60);
+  RE.write(120);
 }
 
 void soft_left(){
-  LE.write();
-  RE.write(45);
+  LE.write(120);
+  RE.write(60);
 }
