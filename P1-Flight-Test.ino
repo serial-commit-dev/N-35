@@ -1,110 +1,89 @@
-//phase-1 Take-Off
-//phase-2 Touch-Down
 #include <Servo.h>
 
 Servo LE;
 Servo RE;
 
-const int motorPin = 5;
+const int motor_pin = 5;
 const int left_elevon = 6;
-const int right_elevon = 9;
+const int rigth_elevon = 9;
 
-int LE_angle = 0;
-int RE_angle = 0;
+int leftElevon_State = 90;
+int rightElevon_State = 90;
 
-unsigned long = previous_millis = 0; //Estimated time for to Ground-roll
-const long interval = 17000;
-
-const long takeOff_interval = 27000; //Estimated time for soft-take-off
-const long Full_takeOff_interval = 42000; //Estimated time for Complete Take-Off!!
-
-const long soft_touchDown_interval = 54000; //Estimated time for soft touch down
-const long complete_touchDown_interval = 67000; //Estimated time for Landing
-
-void setup(){
+void setup() {
   Serial.begin(9600);
-  
-  pinMode(motorPin,OUTPUT);
+
+  pinMode(motor_pin,OUTPUT);
   LE.attach(left_elevon);
   RE.attach(right_elevon);
 
-  LE.write(LE_angle);
-  RE.write(RE_angle);
-  
+  LE.write(leftElevon_State);
+  RE.write(rightElevon_State);
 }
 
-void loop(){
-  ///////////////////////////////////////////!!!Take-Off Phase!!!///////////////////////////////////////////////////////
-  digitalWrite(motorPin, true);
+unsigned long previous_millis = 0;
+const long interval = 5583;
 
-  //Ground-Roll for 17s before take-off
-  current_millis = millis();//the stopwatch
+const long pitch_up_interval = 7483;         //1.9s for picthing up
+const long neutral_interval = 8383;    // 900ms neutral
+const long kill_motor = 9653;       //1.27s   
+const long pitch_down_interval = 14013;     //4.36s     
   
-  if(current_millis - interval){
-     digitalWrite(motorPin, true);
 
-    //Soft-Take-Off 
-    //Duration: 10s
-    takeOff_millis = millis();//the stopwatch
-    if(previous_millis - takeOff_millis >= takeOff_interval){
-      previous_millis = takeOff_millis;
-      
-      soft_up(); 
 
-      //Complete Take-Off!!
-      //Duration: 15s
-      Full_takeOff_millis = millis();
-      if(previous_millis - Full_takeOff_millis >= Full_takeOff_interval){
-        previous_millis = Full_takeOff_millis;
+void loop() {
+  current_millis = millis();
+  
+  //Ground-Roll
+  if (current_millis >= interval){
+    previous_millis = current_millis;
 
-        Up()
+    digitalWrite(motor_pin, true);
 
-           //////////////////////////////////////////////Touch-Down Phase!!///////////////////////////////////////////////////
-          soft_touchDown = millis();// the stopwatch
-          if(previous_millis - soft_tochDown >= soft_touchDown_interval){
-            previous_millis = soft_touchDown;
-
-            soft_down()
-
-              //Complete Touch Down;
-              complete_tocuhDown = millis();//the stopwatch
-              if(previous_millis - complete_tocuhDown >= complete_touchDown_interval){
-                previous_millis = complete_touchDown;
-
-                down()
-
-                       ////////////////////////End Of Flight Test/////////////////////////////
-              }
-          }
-      }
-       
-      
+    pitchUP_millis = millis();
+    if(current_millis - pitchUP_millis >= pitch_up_interval){
+      prvious_millis = pitchUP_millis;
+      pitch_up() //Reaches upto 20.1m/s
     }
     
+    
+    stayNeutral_millis = millis();
+    if(current_millis - stayNeutral_millis >= neutral_interval){
+      previous_millis = stayNeutral_millis;
+      neutral_position() //to let the jet feel air
+    }
+    
+
+    motor_kill_millis = millis();
+    if(stayNeutral_millis - motor_kill_millis  >= kill_motor){
+      digitalWrite(motor_pin, false); //The jet should reach its peak velocity by, here (24.7m/s)
+      
+      
+      pitch_down() 
+    }
   }
 
   
+
 }
 
 
-/////////////////////////////////////////////////////////////Sharp-Manuvering/////////////////////////////////////////////////////////////////
-void Up(){
-  LE.write(50);
-  RE.write(50);
+
+
+///////////////////////////////////Used for ascending and descending//////////////////////////////////////////////////
+void pitch_up(){
+  LE.write(98);// +8 degree climb
+  RE.write(98);
 }
 
-void down(){
-  LE.write(130);
-  Re.write(130);
+void pitch_down();
+  LE.write(82);// -8 degree descend
+  RE.write(82);
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////Soft-maneuvering////////////////////////////////////////////////////////
-void soft_up(){
-  LE.write(60); 
-  RE.write(60);
-}
 
-void soft_down(){
-  LE.write(120);
-  RE.write(120);
+void neutral_position(){
+  LE.write(90);
+  RE.write(90);
 }
